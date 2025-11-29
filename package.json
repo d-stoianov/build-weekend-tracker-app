@@ -15,6 +15,7 @@
     "@tanstack/react-router": "^1.78.0",
     "@tanstack/router-devtools": "^1.78.0",
     "clsx": "^2.1.1",
+    "daisyui": "^5.5.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
