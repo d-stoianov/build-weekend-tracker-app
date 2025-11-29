@@ -1,10 +1,10 @@
-import { StrictMode, useEffect, useState } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@/index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routeTree } from './routeTree.gen'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { UserStatus } from '@/types/user'
+import { AuthProvider, useAuth } from '@/providers/AuthProvider'
 
 const queryClient = new QueryClient()
 
@@ -18,18 +18,9 @@ const router = createRouter({
 })
 
 const AppWithRouterProvider = () => {
-    const [userStatus, setUserStatus] = useState<UserStatus>('initializing')
+    const { user, loading } = useAuth()
 
-    useEffect(() => {
-        // Simulate async fetch (e.g., check auth token)
-        const timer = setTimeout(() => {
-            setUserStatus('anonymous')
-        }, 500)
-
-        return () => clearTimeout(timer)
-    }, [])
-
-    if (userStatus === 'initializing') {
+    if (loading) {
         return (
             <div className="w-full h-full flex justify-center items-center">
                 Loading...
@@ -40,7 +31,7 @@ const AppWithRouterProvider = () => {
     return (
         <RouterProvider
             context={{
-                isAuthorized: userStatus === 'loggedIn',
+                isAuthorized: user !== null && user !== undefined,
             }}
             notFoundMode={'root'}
             router={router}
@@ -51,7 +42,9 @@ const AppWithRouterProvider = () => {
 root.render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AppWithRouterProvider />
+            <AuthProvider>
+                <AppWithRouterProvider />
+            </AuthProvider>
         </QueryClientProvider>
     </StrictMode>
 )

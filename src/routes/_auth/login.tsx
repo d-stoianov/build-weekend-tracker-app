@@ -1,14 +1,32 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import googleIcon from '@/assets/google-icon.png'
 import React, { useState } from 'react'
+import { useAuth } from '@/providers/AuthProvider'
+import { API_URL } from '@/config'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const handleSubmit = (e: React.FormEvent) => {
+    const [error, setError] = useState<string | null>(null)
+    const { login } = useAuth()
+    const router = useRouter()
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log('Login:', { email, password })
+        setError(null)
+
+        try {
+            await login(email, password)
+            router.navigate({ to: '/dashboard' })
+        } catch (err: any) {
+            setError(err.message || 'Login failed')
+        }
+    }
+
+    const loginWithGoogle = () => {
+        // Redirect to your backend Google OAuth route
+        window.location.href = `${API_URL}/auth/google`
     }
 
     return (
@@ -24,7 +42,6 @@ const LoginPage = () => {
                         className="input input-bordered w-full"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
                     />
                     <input
                         type="password"
@@ -32,7 +49,6 @@ const LoginPage = () => {
                         className="input input-bordered w-full"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
                     />
                     <button
                         type="submit"
@@ -41,7 +57,13 @@ const LoginPage = () => {
                         Login
                     </button>
                 </form>
-                <button className={`btn btn-outline`} onClick={() => {}}>
+
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+                <button
+                    className="btn btn-outline mt-4"
+                    onClick={loginWithGoogle}
+                >
                     <img
                         src={googleIcon}
                         alt="Google"
@@ -49,6 +71,7 @@ const LoginPage = () => {
                     />
                     Sign in with Google
                 </button>
+
                 <p className="text-center mt-4 text-sm text-gray-600">
                     Don't have an account yet?{' '}
                     <Link
