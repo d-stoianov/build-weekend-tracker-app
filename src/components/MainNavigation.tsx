@@ -17,7 +17,7 @@ export const MainNavigation = () => {
                         className="hover:opacity-80 transition-opacity"
                     >
                         <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent text-2xl font-bold">
-                            Let Me Know
+                            Notifyer Me
                         </span>{' '}
                         <span className="text-2xl">😉</span>
                     </Link>

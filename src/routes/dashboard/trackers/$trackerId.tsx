@@ -1,58 +1,65 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
-import { useState } from 'react'
-import trackersData from '@/mocks/trackers.json'
-import scenariosData from '@/mocks/scenarios.json'
-import historyData from '@/mocks/tracker-history.json'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
-import { ArrowLeft } from 'lucide-react'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
+import { ArrowLeft, Trash2 } from 'lucide-react'
 import * as Label from '@radix-ui/react-label'
-
-interface Tracker {
-    id: string
-    name: string
-    description: string
-    scenarioId: string
-    active: boolean
-    parameters: Record<string, string>
-    frequency: {
-        repeatEvery: string
-        repeatUnit: string
-        repeatOn: string[]
-    }
-}
-
-interface Scenario {
-    id: string
-    name: string
-    description: string
-    parameters: any[]
-}
-
-interface HistoryEntry {
-    dateTime: string
-    output: string
-}
+import {
+    useTracker,
+    useTrackerHistory,
+    useUpdateTracker,
+    useDeleteTracker,
+} from '@/hooks/useTrackers'
+import { useScenarios } from '@/hooks/useScenarios'
 
 const TrackerDetailsPage = () => {
     const { trackerId } = Route.useParams()
     const router = useRouter()
-    const trackers = trackersData as Tracker[]
-    const scenarios = scenariosData as Scenario[]
-    const histories = historyData as Array<{
-        trackerId: string
-        history: HistoryEntry[]
-    }>
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-    const tracker = trackers.find((t) => t.id === trackerId)
+    const {
+        data: tracker,
+        isLoading: trackerLoading,
+        error: trackerError,
+    } = useTracker(trackerId)
+    const { data: scenarios = [] } = useScenarios()
+    const { data: history = [], isLoading: historyLoading } =
+        useTrackerHistory(trackerId)
+    const updateTracker = useUpdateTracker(trackerId)
+    const deleteTracker = useDeleteTracker()
+
     const scenario = tracker
-        ? scenarios.find((s) => s.id === tracker.scenarioId)
+        ? scenarios.find((s) => String(s.id) === String(tracker.scenarioId))
         : null
-    const history = histories.find((h) => h.trackerId === trackerId)?.history || []
 
-    const [isActive, setIsActive] = useState(tracker?.active || false)
+    const [isActive, setIsActive] = useState(tracker?.isActive || false)
 
-    if (!tracker) {
+    // Update local state when tracker data changes
+    useEffect(() => {
+        if (tracker) {
+            setIsActive(tracker.isActive)
+        }
+    }, [tracker])
+
+    if (trackerLoading) {
+        return (
+            <div className="max-w-4xl mx-auto">
+                <div className="flex items-center justify-center py-12">
+                    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>
+        )
+    }
+
+    if (trackerError || !tracker) {
         return (
             <div className="max-w-4xl mx-auto">
                 <Link
@@ -71,14 +78,29 @@ const TrackerDetailsPage = () => {
         )
     }
 
-    const handleToggleActive = (checked: boolean) => {
+    const handleToggleActive = async (checked: boolean) => {
         setIsActive(checked)
-        // TODO: Add API call to update tracker status
-        console.log('Tracker active status:', checked)
+        try {
+            await updateTracker.mutateAsync({ isActive: checked })
+        } catch (error) {
+            // Revert on error
+            setIsActive(!checked)
+            console.error('Failed to update tracker status:', error)
+        }
     }
 
-    const formatDateTime = (dateTime: string) => {
-        const date = new Date(dateTime)
+    const handleDelete = async () => {
+        try {
+            await deleteTracker.mutateAsync(trackerId)
+            setShowDeleteDialog(false)
+            router.navigate({ to: '/dashboard' })
+        } catch (error) {
+            console.error('Failed to delete tracker:', error)
+        }
+    }
+
+    const formatDateTime = (timestamp: string) => {
+        const date = new Date(timestamp)
         return date.toLocaleString('en-US', {
             year: 'numeric',
             month: 'short',
@@ -89,6 +111,8 @@ const TrackerDetailsPage = () => {
     }
 
     const formatFrequency = () => {
+        if (!tracker.frequency) return 'Not configured'
+
         const { repeatEvery, repeatUnit, repeatOn } = tracker.frequency
         const unitMap: Record<string, string> = {
             day: 'day',
@@ -98,16 +122,24 @@ const TrackerDetailsPage = () => {
         }
         const unit = unitMap[repeatUnit] || repeatUnit
         let frequencyText = `Every ${repeatEvery} ${unit}${repeatEvery !== '1' ? 's' : ''}`
-        
-        if (repeatOn.length > 0) {
-            const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-            const dayNames = repeatOn.map(id => {
-                const day = weekdays.findIndex(d => d === id)
+
+        if (repeatOn && repeatOn.length > 0) {
+            const weekdays = [
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday',
+            ]
+            const dayNames = repeatOn.map((id) => {
+                const day = weekdays.findIndex((d) => d === id)
                 return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]
             })
             frequencyText += ` on ${dayNames.join(', ')}`
         }
-        
+
         return frequencyText
     }
 
@@ -137,10 +169,24 @@ const TrackerDetailsPage = () => {
                             id="active-toggle"
                             checked={isActive}
                             onCheckedChange={handleToggleActive}
+                            disabled={updateTracker.isPending}
                         />
                     </div>
                 </div>
-                <p className="text-muted-foreground">{tracker.description}</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-muted-foreground">
+                        {tracker.description}
+                    </p>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="gap-2"
+                    >
+                        <Trash2 size={16} />
+                        Delete Tracker
+                    </Button>
+                </div>
             </div>
 
             <div className="space-y-6">
@@ -164,14 +210,16 @@ const TrackerDetailsPage = () => {
                             )}
                         </div>
 
-                        <div>
-                            <Label.Root className="text-sm font-medium text-muted-foreground">
-                                Frequency
-                            </Label.Root>
-                            <p className="text-foreground mt-1">
-                                {formatFrequency()}
-                            </p>
-                        </div>
+                        {tracker.frequency && (
+                            <div>
+                                <Label.Root className="text-sm font-medium text-muted-foreground">
+                                    Frequency
+                                </Label.Root>
+                                <p className="text-foreground mt-1">
+                                    {formatFrequency()}
+                                </p>
+                            </div>
+                        )}
 
                         {Object.keys(tracker.parameters).length > 0 && (
                             <div>
@@ -205,7 +253,11 @@ const TrackerDetailsPage = () => {
                     <h2 className="text-xl font-semibold text-foreground mb-4">
                         Execution History
                     </h2>
-                    {history.length === 0 ? (
+                    {historyLoading ? (
+                        <div className="flex items-center justify-center py-8">
+                            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : history.length === 0 ? (
                         <p className="text-muted-foreground text-center py-8">
                             No execution history yet
                         </p>
@@ -229,10 +281,12 @@ const TrackerDetailsPage = () => {
                                             className="border-b border-border/50 hover:bg-accent/50 transition-colors"
                                         >
                                             <td className="py-3 px-4 text-sm text-foreground">
-                                                {formatDateTime(entry.dateTime)}
+                                                {formatDateTime(
+                                                    entry.timestamp
+                                                )}
                                             </td>
                                             <td className="py-3 px-4 text-sm text-foreground">
-                                                {entry.output}
+                                                {entry.text}
                                             </td>
                                         </tr>
                                     ))}
@@ -242,6 +296,38 @@ const TrackerDetailsPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Tracker</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete "{tracker.name}"?
+                            This action cannot be undone and will permanently
+                            delete all tracker data and history.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowDeleteDialog(false)}
+                            disabled={deleteTracker.isPending}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDelete}
+                            disabled={deleteTracker.isPending}
+                        >
+                            {deleteTracker.isPending
+                                ? 'Deleting...'
+                                : 'Delete Tracker'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
@@ -249,4 +335,3 @@ const TrackerDetailsPage = () => {
 export const Route = createFileRoute('/dashboard/trackers/$trackerId')({
     component: TrackerDetailsPage,
 })
-
