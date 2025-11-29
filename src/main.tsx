@@ -24,7 +24,7 @@ const AppWithRouterProvider = () => {
         // Simulate async fetch (e.g., check auth token)
         const timer = setTimeout(() => {
             setUserStatus('anonymous')
-        }, 1000)
+        }, 500)
 
         return () => clearTimeout(timer)
     }, [])
