@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "name": "Instagram Posts Check",
+        "description": "Check for new Instagram posts from @username every day",
+        "scenarioId": "scenario-1"
+    },
+    {
+        "id": "2",
+        "name": "Twitter Mentions",
+        "description": "Monitor Twitter mentions of your brand name",
+        "scenarioId": "scenario-2"
+    },
+    {
+        "id": "3",
+        "name": "Reddit Thread Updates",
+        "description": "Track updates on specific Reddit threads",
+        "scenarioId": "scenario-3"
+    },
+    {
+        "id": "4",
+        "name": "GitHub Repository Activity",
+        "description": "Get notified about new commits in a repository",
+        "scenarioId": "scenario-4"
+    }
+]

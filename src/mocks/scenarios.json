@@ -1,0 +1,112 @@
+[
+    {
+        "id": "scenario-1",
+        "name": "Instagram Posts Monitor",
+        "description": "Monitor new posts from Instagram accounts",
+        "parameters": [
+            {
+                "id": "username",
+                "type": "text",
+                "label": "Instagram Username",
+                "placeholder": "Enter Instagram username..."
+            },
+            {
+                "id": "checkInterval",
+                "type": "dropdown",
+                "label": "Check Interval",
+                "default": "daily",
+                "options": [
+                    {
+                        "label": "Daily",
+                        "value": "daily"
+                    },
+                    {
+                        "label": "Every 6 Hours",
+                        "value": "6hours"
+                    },
+                    {
+                        "label": "Hourly",
+                        "value": "hourly"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "scenario-2",
+        "name": "Twitter Mentions Tracker",
+        "description": "Track mentions of specific keywords on Twitter",
+        "parameters": [
+            {
+                "id": "keyword",
+                "type": "text",
+                "label": "Keyword",
+                "placeholder": "Enter keyword to track..."
+            },
+            {
+                "id": "platform",
+                "type": "dropdown",
+                "label": "Platform",
+                "default": "twitter",
+                "options": [
+                    {
+                        "label": "Twitter",
+                        "value": "twitter"
+                    },
+                    {
+                        "label": "X (formerly Twitter)",
+                        "value": "x"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "scenario-3",
+        "name": "Reddit Thread Monitor",
+        "description": "Monitor updates on Reddit threads",
+        "parameters": [
+            {
+                "id": "prompt",
+                "type": "text",
+                "label": "Prompt",
+                "placeholder": "Enter your prompt..."
+            },
+            {
+                "id": "model",
+                "type": "dropdown",
+                "label": "GPT Model",
+                "default": "gpt5",
+                "options": [
+                    {
+                        "label": "GPT-5",
+                        "value": "gpt5"
+                    },
+                    {
+                        "label": "GPT-4",
+                        "value": "gpt4"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "scenario-4",
+        "name": "GitHub Activity Tracker",
+        "description": "Track activity in GitHub repositories",
+        "parameters": [
+            {
+                "id": "owner",
+                "type": "text",
+                "label": "Repository Owner",
+                "placeholder": "Enter repository owner..."
+            },
+            {
+                "id": "repo",
+                "type": "text",
+                "label": "Repository Name",
+                "placeholder": "Enter repository name..."
+            }
+        ]
+    }
+]
