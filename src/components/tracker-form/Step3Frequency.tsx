@@ -21,24 +21,31 @@ const weekdays = [
 export const Step3Frequency = () => {
     const { formData, updateFormData } = useCreateTrackerContext()
 
+    // Ensure frequency is always defined with defaults
+    const frequency = formData.frequency || {
+        repeatEvery: '1',
+        repeatUnit: 'day' as const,
+        repeatOn: [],
+    }
+
     const handleFrequencyChange = (field: string, value: string) => {
         updateFormData({
             frequency: {
-                ...formData.frequency,
+                ...frequency,
                 [field]: value,
             },
         })
     }
 
     const toggleWeekday = (weekdayId: string) => {
-        const currentRepeatOn = formData.frequency.repeatOn
+        const currentRepeatOn = frequency.repeatOn
         const isSelected = currentRepeatOn.includes(weekdayId)
         const newRepeatOn = isSelected
             ? currentRepeatOn.filter((id) => id !== weekdayId)
             : [...currentRepeatOn, weekdayId]
         updateFormData({
             frequency: {
-                ...formData.frequency,
+                ...frequency,
                 repeatOn: newRepeatOn,
             },
         })
@@ -69,7 +76,7 @@ export const Step3Frequency = () => {
                             min="1"
                             placeholder="1"
                             required
-                            value={formData.frequency.repeatEvery}
+                            value={frequency.repeatEvery}
                             onChange={(e) =>
                                 handleFrequencyChange(
                                     'repeatEvery',
@@ -79,7 +86,7 @@ export const Step3Frequency = () => {
                             className="w-24 px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                         />
                         <Select
-                            value={formData.frequency.repeatUnit}
+                            value={frequency.repeatUnit}
                             onValueChange={(value) =>
                                 handleFrequencyChange('repeatUnit', value)
                             }
@@ -107,7 +114,7 @@ export const Step3Frequency = () => {
                     <div className="flex items-center gap-2 flex-wrap">
                         {weekdays.map((day) => {
                             const isSelected =
-                                formData.frequency.repeatOn.includes(day.id)
+                                frequency.repeatOn.includes(day.id)
                             return (
                                 <button
                                     key={day.id}
@@ -128,10 +135,10 @@ export const Step3Frequency = () => {
                             )
                         })}
                     </div>
-                    {formData.frequency.repeatOn.length > 0 && (
+                    {frequency.repeatOn.length > 0 && (
                         <p className="text-xs text-muted-foreground">
                             Selected:{' '}
-                            {formData.frequency.repeatOn
+                            {frequency.repeatOn
                                 .map(
                                     (id) =>
                                         weekdays.find((d) => d.id === id)

@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             password,
         })
         if (error) throw error
-        if (data) {
+        if (data && data.user && data.session) {
             const userResponse = await fetch(API_URL + '/user', {
                 method: 'GET',
                 headers: {
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const register = async (email: string, password: string) => {
         const { data, error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
-        if (data) {
+        if (data && data.user && data.session) {
             setUser({ id: data.user.id, email: data.user.email! })
 
             const userResponse = await fetch(API_URL + '/user', {
