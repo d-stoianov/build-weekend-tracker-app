@@ -10,6 +10,7 @@ export default defineConfig({
             target: 'react',
         }),
     ],
+    envDir: './env',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
