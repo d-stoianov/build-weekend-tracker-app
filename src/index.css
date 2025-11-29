@@ -1,3 +1,172 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        /* Apple-inspired clean design system */
+        --background: 0 0% 99%; /* Pure white background */
+        --foreground: 0 0% 9%; /* Deep black text for high contrast */
+
+        --card: 0 0% 100%; /* Pure white cards */
+        --card-foreground: 0 0% 9%;
+
+        /* Apple-style accent colors */
+        --sorare-blue: 212 100% 50%; /* Apple blue */
+        --sorare-orange: 28 100% 54%; /* Apple orange */
+        --sorare-green: 145 63% 42%; /* Apple green */
+        --sorare-purple: 253 56% 58%; /* Apple purple */
+        --sorare-teal: 174 100% 39%; /* Apple teal */
+        --sorare-red: 0 77% 54%; /* Apple red */
+
+        /* Data visualization colors */
+        --purple-500: 253 56% 58%;
+        --pink-500: 330 80% 60%;
+        --blue-500: 212 100% 50%;
+        --slate-500: 215 16% 47%;
+
+        /* Primary - Apple blue */
+        --primary: 212 100% 50%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Secondary - Light gray */
+        --secondary: 0 0% 96%;
+        --secondary-foreground: 0 0% 9%;
+
+        /* Muted elements */
+        --muted: 0 0% 96%;
+        --muted-foreground: 0 0% 45%;
+
+        /* Button hover - Darker blue */
+        --button-hover: 212 100% 45%;
+
+        /* Borders - Very light gray */
+        --border: 0 0% 90%;
+        --input: 0 0% 90%;
+
+        /* Apple-style gradients */
+        --apple-gradient-blue: linear-gradient(
+            135deg,
+            hsl(212, 100%, 50%) 0%,
+            hsl(212, 100%, 60%) 100%
+        );
+        --apple-gradient-gray: linear-gradient(
+            135deg,
+            hsl(0, 0%, 98%) 0%,
+            hsl(0, 0%, 94%) 100%
+        );
+        --apple-gradient-hero: linear-gradient(
+            135deg,
+            hsl(0, 0%, 100%) 0%,
+            hsl(0, 0%, 96%) 100%
+        );
+
+        /* Premium shadows */
+        --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+        --shadow:
+            0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+        --shadow-md:
+            0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+        --shadow-lg:
+            0 10px 15px -3px hsl(0 0% 0% / 0.1),
+            0 4px 6px -4px hsl(0 0% 0% / 0.1);
+        --shadow-xl:
+            0 20px 25px -5px hsl(0 0% 0% / 0.1),
+            0 8px 10px -6px hsl(0 0% 0% / 0.1);
+
+        /* Apple-style background */
+        --gradient-bg: var(--apple-gradient-hero);
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+
+        --ring: 222.2 84% 4.9%;
+
+        --radius: 0.5rem;
+
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+
+        /* Custom colors for game modes */
+        --f2p-gray: 220 5% 96%;
+        --f2p-gray-foreground: 220 10% 25%;
+        --f2p-gray-border: 220 5% 85%;
+        --sorare-gold: 45 90% 92%;
+        --sorare-gold-foreground: 35 80% 20%;
+        --sorare-gold-border: 45 70% 65%;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+
+        /* Custom colors for game modes - dark mode */
+        --f2p-gray: 220 5% 15%;
+        --f2p-gray-foreground: 220 10% 85%;
+        --f2p-gray-border: 220 5% 25%;
+        --sorare-gold: 45 85% 65%;
+        --sorare-gold-foreground: 30 15% 90%;
+        --sorare-gold-border: 45 70% 45%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans;
+    }
+}
+
+@layer components {
+    button[data-active='true'] {
+        @apply bg-accent text-accent-foreground;
+    }
+}

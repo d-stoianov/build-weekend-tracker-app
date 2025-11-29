@@ -2,6 +2,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
+import * as Label from '@radix-ui/react-label'
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('')
@@ -24,46 +25,71 @@ const RegisterPage = () => {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-base-200">
-            <div className="card w-full max-w-md shadow-xl bg-base-100 p-8">
-                <h1 className="text-2xl font-bold text-center mb-4">
-                    Create Account
-                </h1>
-
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <input
-                        name={'email'}
-                        type="email"
-                        placeholder="Email"
-                        className="input input-bordered w-full"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <input
-                        name={'password'}
-                        type="password"
-                        placeholder="Password"
-                        className="input input-bordered w-full"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+        <div className="flex items-center justify-center h-full bg-background py-8 px-4">
+            <div className="w-full max-w-md shadow-2xl bg-card/95 backdrop-blur-sm rounded-xl p-10 border border-border/50">
+                <div className="mb-8 text-center">
+                    <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                        Create Account
+                    </h1>
+                    <p className="text-muted-foreground text-sm">
+                        Sign up to get started
+                    </p>
+                </div>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-2">
+                        <Label.Root
+                            htmlFor="email"
+                            className="text-sm font-medium text-foreground"
+                        >
+                            Email
+                        </Label.Root>
+                        <input
+                            id="email"
+                            name={'email'}
+                            type="email"
+                            placeholder="Enter your email"
+                            className="w-full px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <Label.Root
+                            htmlFor="password"
+                            className="text-sm font-medium text-foreground"
+                        >
+                            Password
+                        </Label.Root>
+                        <input
+                            id="password"
+                            name={'password'}
+                            type="password"
+                            placeholder="Create a password"
+                            className="w-full px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    {error && (
+                        <div className="px-4 py-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                            <p className="text-destructive text-sm">{error}</p>
+                        </div>
+                    )}
                     <button
                         type="submit"
-                        className="btn btn-primary w-full mt-2"
+                        className="w-full mt-2 px-4 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:brightness-90 dark:hover:brightness-110 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background shadow-lg shadow-primary/20"
                     >
-                        Register
+                        Create Account
                     </button>
                 </form>
 
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
-                <p className="text-center mt-4 text-sm text-gray-600">
+                <p className="text-center mt-6 text-sm text-muted-foreground">
                     Already have an account?{' '}
                     <Link
                         to="/login"
-                        className="text-primary font-semibold hover:underline"
+                        className="text-primary font-semibold hover:underline transition-colors"
                     >
-                        Login
+                        Sign in
                     </Link>
                 </p>
             </div>

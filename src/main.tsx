@@ -23,7 +23,7 @@ const AppWithRouterProvider = () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex justify-center items-center">
-                <span className="loading loading-spinner loading-xl size-[3rem] text-primary"></span>
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         )
     }
