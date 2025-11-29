@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ignore native static build assets
+ios/App/App/public/
+ios/App/Pods/
+ios/App/App/GoogleService-info.plist
+ios/DerivedData
+ios/App/App/capacitor.config.json
+ios/App/App.xcodeproj/xcuserdata/*
+ios/App/App.xcworkspace/xcuserdata/*
+
+android/app/src/main/assets/
+android/app/google-services.json
+android/app/src/main/assets/capacitor.config.json
+
+# ignore build files
+tsconfig.tsbuildinfo

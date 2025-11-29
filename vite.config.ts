@@ -1,0 +1,19 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import * as path from 'node:path'
+import tanstackRouter from '@tanstack/router-plugin/vite'
+
+export default defineConfig({
+    plugins: [
+        react(),
+        tanstackRouter({
+            target: 'react',
+        }),
+    ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src'),
+        },
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    },
+})
