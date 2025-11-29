@@ -549,3 +549,4 @@ const CreateTrackerPage = () => {
 export const Route = createFileRoute('/dashboard/trackers/new')({
     component: CreateTrackerPage,
 })
+

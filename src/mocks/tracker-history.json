@@ -1,0 +1,63 @@
+[
+    {
+        "trackerId": "1",
+        "history": [
+            {
+                "dateTime": "2024-01-15T10:30:00Z",
+                "output": "Found 3 new posts from @username"
+            },
+            {
+                "dateTime": "2024-01-14T10:30:00Z",
+                "output": "No new posts found"
+            },
+            {
+                "dateTime": "2024-01-13T10:30:00Z",
+                "output": "Found 1 new post from @username"
+            },
+            {
+                "dateTime": "2024-01-12T10:30:00Z",
+                "output": "Found 2 new posts from @username"
+            }
+        ]
+    },
+    {
+        "trackerId": "2",
+        "history": [
+            {
+                "dateTime": "2024-01-15T14:20:00Z",
+                "output": "5 new mentions found for keyword 'your_brand'"
+            },
+            {
+                "dateTime": "2024-01-15T08:20:00Z",
+                "output": "2 new mentions found for keyword 'your_brand'"
+            }
+        ]
+    },
+    {
+        "trackerId": "3",
+        "history": [
+            {
+                "dateTime": "2024-01-15T16:45:00Z",
+                "output": "Thread updated: 15 new comments"
+            },
+            {
+                "dateTime": "2024-01-14T16:45:00Z",
+                "output": "Thread updated: 8 new comments"
+            }
+        ]
+    },
+    {
+        "trackerId": "4",
+        "history": [
+            {
+                "dateTime": "2024-01-15T12:00:00Z",
+                "output": "3 new commits detected in repository"
+            },
+            {
+                "dateTime": "2024-01-14T12:00:00Z",
+                "output": "1 new commit detected in repository"
+            }
+        ]
+    }
+]
+

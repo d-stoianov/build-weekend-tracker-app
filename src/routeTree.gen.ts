@@ -14,7 +14,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as DashboardTrackersNewRouteImport } from './routes/dashboard/trackers.new'
+import { Route as DashboardTrackersNewRouteImport } from './routes/dashboard/trackers/new'
+import { Route as DashboardTrackersTrackerIdRouteImport } from './routes/dashboard/trackers/$trackerId'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -46,6 +47,12 @@ const DashboardTrackersNewRoute = DashboardTrackersNewRouteImport.update({
   path: '/trackers/new',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardTrackersTrackerIdRoute =
+  DashboardTrackersTrackerIdRouteImport.update({
+    id: '/trackers/$trackerId',
+    path: '/trackers/$trackerId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
 }
 export interface FileRoutesByTo {
@@ -60,6 +68,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
 }
 export interface FileRoutesById {
@@ -69,6 +78,7 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
 }
 export interface FileRouteTypes {
@@ -79,9 +89,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard/'
+    | '/dashboard/trackers/$trackerId'
     | '/dashboard/trackers/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/dashboard' | '/dashboard/trackers/new'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/dashboard/trackers/$trackerId'
+    | '/dashboard/trackers/new'
   id:
     | '__root__'
     | '/'
@@ -89,6 +106,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/register'
     | '/dashboard/'
+    | '/dashboard/trackers/$trackerId'
     | '/dashboard/trackers/new'
   fileRoutesById: FileRoutesById
 }
@@ -143,16 +161,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTrackersNewRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/trackers/$trackerId': {
+      id: '/dashboard/trackers/$trackerId'
+      path: '/trackers/$trackerId'
+      fullPath: '/dashboard/trackers/$trackerId'
+      preLoaderRoute: typeof DashboardTrackersTrackerIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardTrackersTrackerIdRoute: typeof DashboardTrackersTrackerIdRoute
   DashboardTrackersNewRoute: typeof DashboardTrackersNewRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardTrackersTrackerIdRoute: DashboardTrackersTrackerIdRoute,
   DashboardTrackersNewRoute: DashboardTrackersNewRoute,
 }
 

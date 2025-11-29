@@ -3,24 +3,68 @@
         "id": "1",
         "name": "Instagram Posts Check",
         "description": "Check for new Instagram posts from @username every day",
-        "scenarioId": "scenario-1"
+        "scenarioId": "scenario-1",
+        "active": true,
+        "createdAt": "2024-01-10T08:00:00Z",
+        "parameters": {
+            "username": "@example_user",
+            "checkInterval": "daily"
+        },
+        "frequency": {
+            "repeatEvery": "1",
+            "repeatUnit": "day",
+            "repeatOn": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+        }
     },
     {
         "id": "2",
         "name": "Twitter Mentions",
         "description": "Monitor Twitter mentions of your brand name",
-        "scenarioId": "scenario-2"
+        "scenarioId": "scenario-2",
+        "active": true,
+        "createdAt": "2024-01-08T14:30:00Z",
+        "parameters": {
+            "keyword": "your_brand",
+            "platform": "twitter"
+        },
+        "frequency": {
+            "repeatEvery": "6",
+            "repeatUnit": "hour",
+            "repeatOn": []
+        }
     },
     {
         "id": "3",
         "name": "Reddit Thread Updates",
         "description": "Track updates on specific Reddit threads",
-        "scenarioId": "scenario-3"
+        "scenarioId": "scenario-3",
+        "active": false,
+        "createdAt": "2024-01-05T10:15:00Z",
+        "parameters": {
+            "prompt": "Monitor technology discussions",
+            "model": "gpt5"
+        },
+        "frequency": {
+            "repeatEvery": "1",
+            "repeatUnit": "week",
+            "repeatOn": ["monday"]
+        }
     },
     {
         "id": "4",
         "name": "GitHub Repository Activity",
         "description": "Get notified about new commits in a repository",
-        "scenarioId": "scenario-4"
+        "scenarioId": "scenario-4",
+        "active": true,
+        "createdAt": "2024-01-12T16:45:00Z",
+        "parameters": {
+            "owner": "username",
+            "repo": "repository-name"
+        },
+        "frequency": {
+            "repeatEvery": "1",
+            "repeatUnit": "day",
+            "repeatOn": []
+        }
     }
 ]
