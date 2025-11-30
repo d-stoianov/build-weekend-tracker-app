@@ -2,7 +2,30 @@ import { API_URL } from '@/config'
 import { supabase } from '@/providers/supabase'
 
 async function getAuthHeaders(): Promise<HeadersInit> {
-    const { data } = await supabase.auth.getSession()
+    // Get the current session
+    let { data, error } = await supabase.auth.getSession()
+    
+    // If session is expired or missing, try to refresh it
+    if (error || !data.session) {
+        const refreshResult = await supabase.auth.refreshSession()
+        if (refreshResult.data.session) {
+            data = refreshResult.data
+        }
+    } else if (data.session) {
+        // Check if token is about to expire (within 5 minutes)
+        const expiresAt = data.session.expires_at
+        if (expiresAt) {
+            const expiresIn = expiresAt - Math.floor(Date.now() / 1000)
+            // Refresh if token expires in less than 5 minutes
+            if (expiresIn < 300) {
+                const refreshResult = await supabase.auth.refreshSession()
+                if (refreshResult.data.session) {
+                    data = refreshResult.data
+                }
+            }
+        }
+    }
+    
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     }
