@@ -34,6 +34,7 @@ export interface Tracker {
     createdAt: string
     parameters: Record<string, string>
     frequency?: TrackerFrequency
+    outputs?: Record<string, string> // e.g., { "email": "true", "sheet": "true" }
 }
 
 export interface CreateTrackerRequest {
@@ -42,6 +43,7 @@ export interface CreateTrackerRequest {
     scenarioId: string
     parameters: Record<string, string>
     frequency?: TrackerFrequency
+    outputs?: Record<string, string> // e.g., { "email": "true", "sheet": "true" }
 }
 
 export interface UpdateTrackerRequest {
@@ -50,6 +52,7 @@ export interface UpdateTrackerRequest {
     isActive?: boolean
     parameters?: Record<string, string>
     frequency?: TrackerFrequency
+    outputs?: Record<string, string> // e.g., { "email": "true", "sheet": "true" }
 }
 
 export interface TrackerHistoryEntry {

@@ -92,6 +92,8 @@ export const useCreateTracker = () => {
                 }
             }
 
+            console.log('apiData', apiData)
+
             return api.post<Tracker>('/trackers', apiData)
         },
         onSuccess: () => {

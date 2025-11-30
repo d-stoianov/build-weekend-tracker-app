@@ -6,6 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useCreateTrackerContext } from '@/contexts/CreateTrackerContext'
 
 export const Step3Frequency = () => {
@@ -57,6 +58,18 @@ export const Step3Frequency = () => {
         // Convert local datetime to ISO string
         const date = new Date(value)
         handleFrequencyChange('startDateTime', date.toISOString())
+    }
+
+    // Handle outputs checkbox changes
+    const outputs = formData.outputs || {}
+    const handleOutputChange = (key: string, checked: boolean) => {
+        const newOutputs = { ...outputs }
+        if (checked) {
+            newOutputs[key] = 'true'
+        } else {
+            delete newOutputs[key]
+        }
+        updateFormData({ outputs: newOutputs })
     }
 
     return (
@@ -131,6 +144,44 @@ export const Step3Frequency = () => {
                                 <SelectItem value="month">Month(s)</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label.Root className="text-sm font-medium text-foreground">
+                        Output
+                    </Label.Root>
+                    <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="outputs-email"
+                                checked={outputs.email === 'true'}
+                                onCheckedChange={(checked) =>
+                                    handleOutputChange('email', !!checked)
+                                }
+                            />
+                            <Label.Root
+                                htmlFor="outputs-email"
+                                className="text-sm font-medium text-foreground cursor-pointer"
+                            >
+                                Email
+                            </Label.Root>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="outputs-sheet"
+                                checked={outputs.sheet === 'true'}
+                                onCheckedChange={(checked) =>
+                                    handleOutputChange('sheet', !!checked)
+                                }
+                            />
+                            <Label.Root
+                                htmlFor="outputs-sheet"
+                                className="text-sm font-medium text-foreground cursor-pointer"
+                            >
+                                Sheet
+                            </Label.Root>
+                        </div>
                     </div>
                 </div>
             </div>

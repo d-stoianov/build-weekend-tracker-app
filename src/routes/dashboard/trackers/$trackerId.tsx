@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
     Dialog,
     DialogContent,
@@ -45,11 +46,15 @@ const TrackerDetailsPage = () => {
         : null
 
     const [isActive, setIsActive] = useState(tracker?.isActive || false)
+    const [outputs, setOutputs] = useState<Record<string, string>>(
+        tracker?.outputs || {}
+    )
 
     // Update local state when tracker data changes
     useEffect(() => {
         if (tracker) {
             setIsActive(tracker.isActive)
+            setOutputs(tracker.outputs || {})
         }
     }, [tracker])
 
@@ -90,6 +95,23 @@ const TrackerDetailsPage = () => {
             // Revert on error
             setIsActive(!checked)
             console.error('Failed to update tracker status:', error)
+        }
+    }
+
+    const handleOutputChange = async (key: string, checked: boolean) => {
+        const newOutputs = { ...outputs }
+        if (checked) {
+            newOutputs[key] = 'true'
+        } else {
+            delete newOutputs[key]
+        }
+        setOutputs(newOutputs)
+        try {
+            await updateTracker.mutateAsync({ outputs: newOutputs })
+        } catch (error) {
+            // Revert on error
+            setOutputs(outputs)
+            console.error('Failed to update tracker outputs:', error)
         }
     }
 
@@ -244,6 +266,52 @@ const TrackerDetailsPage = () => {
                                 </div>
                             </div>
                         )}
+
+                        <div>
+                            <Label.Root className="text-sm font-medium text-muted-foreground mb-2 block">
+                                Outputs
+                            </Label.Root>
+                            <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="outputs-email"
+                                        checked={outputs.email === 'true'}
+                                        onCheckedChange={(checked) =>
+                                            handleOutputChange(
+                                                'email',
+                                                !!checked
+                                            )
+                                        }
+                                        disabled={updateTracker.isPending}
+                                    />
+                                    <Label.Root
+                                        htmlFor="outputs-email"
+                                        className="text-sm font-medium text-foreground cursor-pointer"
+                                    >
+                                        Email
+                                    </Label.Root>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="outputs-sheet"
+                                        checked={outputs.sheet === 'true'}
+                                        onCheckedChange={(checked) =>
+                                            handleOutputChange(
+                                                'sheet',
+                                                !!checked
+                                            )
+                                        }
+                                        disabled={updateTracker.isPending}
+                                    />
+                                    <Label.Root
+                                        htmlFor="outputs-sheet"
+                                        className="text-sm font-medium text-foreground cursor-pointer"
+                                    >
+                                        Sheet
+                                    </Label.Root>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

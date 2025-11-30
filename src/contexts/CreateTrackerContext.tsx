@@ -29,6 +29,7 @@ const initialFormData: CreateTrackerRequest = {
         interval: 1,
         intervalUnit: 'day',
     },
+    outputs: {},
 }
 
 export const CreateTrackerProvider = ({
@@ -60,6 +61,8 @@ export const CreateTrackerProvider = ({
                               ...data.frequency,
                           }
                         : prev.frequency,
+                    // Replace outputs if data.outputs exists, otherwise keep prev.outputs
+                    outputs: data.outputs !== undefined ? data.outputs : prev.outputs,
                 }
                 return updated
             })

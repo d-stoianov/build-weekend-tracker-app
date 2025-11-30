@@ -23,6 +23,8 @@ const CreateTrackerForm = () => {
         (s) => String(s.id) === String(formData.scenarioId)
     )
 
+    console.log('formData', formData)
+
     const handleNext = async () => {
         if (step === 1) {
             // Validate step 1
@@ -62,14 +64,21 @@ const CreateTrackerForm = () => {
         } else if (step === 3) {
             // Final step - submit
             // Submit the form (frequency will be converted to API format in the hook)
+            if (!formData.scenarioId) {
+                console.error('Scenario ID is missing')
+                return
+            }
             try {
-                await createTracker.mutateAsync({
+                const payload = {
                     name: formData.name,
                     description: formData.description || undefined,
                     scenarioId: formData.scenarioId,
                     parameters: formData.parameters,
                     frequency: formData.frequency,
-                })
+                    outputs: formData.outputs || {},
+                }
+                console.log('Creating tracker with payload:', payload)
+                await createTracker.mutateAsync(payload)
                 resetForm()
                 router.navigate({ to: '/dashboard' })
             } catch (error) {
