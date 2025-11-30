@@ -24,6 +24,10 @@ const TrackerDetailsPage = () => {
     const { trackerId } = Route.useParams()
     const router = useRouter()
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const [selectedHistoryEntry, setSelectedHistoryEntry] = useState<{
+        output: string
+        timestamp: string
+    } | null>(null)
 
     const {
         data: tracker,
@@ -141,6 +145,14 @@ const TrackerDetailsPage = () => {
         }
 
         return frequencyText
+    }
+
+    const isHtmlDocument = (content: string): boolean => {
+        const trimmed = content.trim()
+        return (
+            trimmed.toLowerCase().startsWith('<!doctype html') ||
+            trimmed.toLowerCase().startsWith('<html')
+        )
     }
 
     return (
@@ -286,7 +298,26 @@ const TrackerDetailsPage = () => {
                                                 )}
                                             </td>
                                             <td className="py-3 px-4 text-sm text-foreground">
-                                                {entry.text}
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedHistoryEntry(
+                                                            {
+                                                                output: entry.output,
+                                                                timestamp:
+                                                                    entry.timestamp,
+                                                            }
+                                                        )
+                                                    }
+                                                    className="text-left w-full hover:text-primary transition-colors cursor-pointer"
+                                                >
+                                                    <div className="font-medium">
+                                                        {entry.summary}
+                                                    </div>
+                                                    <div className="text-xs text-muted-foreground mt-1">
+                                                        Click to show details
+                                                    </div>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
@@ -324,6 +355,49 @@ const TrackerDetailsPage = () => {
                             {deleteTracker.isPending
                                 ? 'Deleting...'
                                 : 'Delete Tracker'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* History Detail Modal */}
+            <Dialog
+                open={!!selectedHistoryEntry}
+                onOpenChange={(open) => {
+                    if (!open) setSelectedHistoryEntry(null)
+                }}
+            >
+                <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Execution Details</DialogTitle>
+                        <DialogDescription>
+                            {selectedHistoryEntry &&
+                                formatDateTime(selectedHistoryEntry.timestamp)}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-4 flex-1 min-h-0 overflow-hidden">
+                        {selectedHistoryEntry &&
+                            (isHtmlDocument(selectedHistoryEntry.output) ? (
+                                <iframe
+                                    srcDoc={selectedHistoryEntry.output}
+                                    className="w-full h-full min-h-[500px] border border-border rounded-lg"
+                                    title="Execution Output"
+                                    sandbox="allow-same-origin"
+                                />
+                            ) : (
+                                <div className="bg-background border border-border rounded-lg p-4 max-h-[500px] overflow-y-auto">
+                                    <pre className="text-sm text-foreground whitespace-pre-wrap break-words">
+                                        {selectedHistoryEntry.output}
+                                    </pre>
+                                </div>
+                            ))}
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setSelectedHistoryEntry(null)}
+                        >
+                            Close
                         </Button>
                     </DialogFooter>
                 </DialogContent>

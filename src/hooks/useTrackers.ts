@@ -29,6 +29,7 @@ export const useTrackerHistory = (trackerId: string) => {
         queryFn: () =>
             api.get<TrackerHistoryEntry[]>(`/trackers/${trackerId}/history`),
         enabled: !!trackerId,
+        refetchInterval: 10000, // Poll every 10 seconds
     })
 }
 

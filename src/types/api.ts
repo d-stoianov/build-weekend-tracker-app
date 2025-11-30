@@ -54,5 +54,6 @@ export interface UpdateTrackerRequest {
 
 export interface TrackerHistoryEntry {
     timestamp: string
-    text: string
+    output: string
+    summary: string
 }
