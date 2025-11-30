@@ -75,7 +75,9 @@ const ProfilePage = () => {
                             <Label.Root className="text-sm font-medium text-muted-foreground">
                                 Email
                             </Label.Root>
-                            <p className="text-foreground mt-1">{user?.email}</p>
+                            <p className="text-foreground mt-1">
+                                {user?.email}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -147,4 +149,3 @@ export const Route = createFileRoute('/dashboard/profile')({
         }
     },
 })
-
