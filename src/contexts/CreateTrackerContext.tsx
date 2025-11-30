@@ -62,7 +62,10 @@ export const CreateTrackerProvider = ({
                           }
                         : prev.frequency,
                     // Replace outputs if data.outputs exists, otherwise keep prev.outputs
-                    outputs: data.outputs !== undefined ? data.outputs : prev.outputs,
+                    outputs:
+                        data.outputs !== undefined
+                            ? data.outputs
+                            : prev.outputs,
                 }
                 return updated
             })

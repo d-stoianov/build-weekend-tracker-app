@@ -3,14 +3,13 @@ import { Link } from '@tanstack/react-router'
 import googleIcon from '@/assets/google-icon.png'
 import React, { useState } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
-import { API_URL } from '@/config'
 import * as Label from '@radix-ui/react-label'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
-    const { login } = useAuth()
+    const { login, loginWithGoogle } = useAuth()
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -25,9 +24,13 @@ const LoginPage = () => {
         }
     }
 
-    const loginWithGoogle = () => {
-        // Redirect to your backend Google OAuth route
-        window.location.href = `${API_URL}/auth/google`
+    const handleGoogleLogin = async () => {
+        try {
+            setError(null)
+            await loginWithGoogle()
+        } catch (err: any) {
+            setError(err.message || 'Google login failed')
+        }
     }
 
     return (
@@ -99,14 +102,11 @@ const LoginPage = () => {
                 </div>
 
                 <button
+                    type="button"
                     className="w-full px-4 py-3 rounded-lg border border-border bg-background/50 text-foreground font-medium hover:bg-accent hover:text-accent-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background flex items-center justify-center gap-2"
-                    onClick={loginWithGoogle}
+                    onClick={handleGoogleLogin}
                 >
-                    <img
-                        src={googleIcon}
-                        alt="Google"
-                        className="w-5 h-5"
-                    />
+                    <img src={googleIcon} alt="Google" className="w-5 h-5" />
                     Sign in with Google
                 </button>
 

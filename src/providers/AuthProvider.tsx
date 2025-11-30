@@ -18,6 +18,7 @@ interface AuthContextType {
     loading: boolean
     login: (email: string, password: string) => Promise<UserProfile | null>
     register: (email: string, password: string) => Promise<UserProfile | null>
+    loginWithGoogle: () => Promise<void>
     logout: () => Promise<void>
 }
 
@@ -57,19 +58,48 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const { data: listener } = supabase.auth.onAuthStateChange(
             async (event, session) => {
-                if (
-                    event === 'SIGNED_OUT' ||
-                    event === 'TOKEN_REFRESHED' ||
-                    event === 'SIGNED_IN'
-                ) {
+                if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                     if (session?.user) {
+                        // Create or get user in backend
+                        try {
+                            const userResponse = await fetch(
+                                API_URL + '/user',
+                                {
+                                    method: 'GET',
+                                    headers: {
+                                        Authorization: `Bearer ${session.access_token}`,
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            )
+
+                            // If user doesn't exist, create it
+                            if (
+                                userResponse.status === 404 &&
+                                session.user.email
+                            ) {
+                                await fetch(API_URL + '/user', {
+                                    method: 'POST',
+                                    headers: {
+                                        Authorization: `Bearer ${session.access_token}`,
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        email: session.user.email,
+                                    }),
+                                })
+                            }
+                        } catch (err) {
+                            console.error('Error syncing user:', err)
+                        }
+
                         setUser({
                             id: session.user.id,
                             email: session.user.email!,
                         })
-                    } else {
-                        setUser(null)
                     }
+                } else if (event === 'SIGNED_OUT') {
+                    setUser(null)
                 } else if (session?.user) {
                     setUser({ id: session.user.id, email: session.user.email! })
                 } else {
@@ -133,6 +163,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return null
     }
 
+    const loginWithGoogle = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}`,
+            },
+        })
+        if (error) throw error
+    }
+
     const logout = async () => {
         await supabase.auth.signOut()
         setUser(null)
@@ -140,7 +180,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return (
         <AuthContext.Provider
-            value={{ user, loading, login, register, logout }}
+            value={{ user, loading, login, register, loginWithGoogle, logout }}
         >
             {children}
         </AuthContext.Provider>
