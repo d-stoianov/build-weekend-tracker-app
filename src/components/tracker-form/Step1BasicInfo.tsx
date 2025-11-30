@@ -97,7 +97,7 @@ export const Step1BasicInfo = () => {
                     <SelectTrigger id="scenario" className="w-full">
                         <SelectValue placeholder="Select a scenario" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="w-[var(--radix-select-trigger-width)]">
                         {scenarios.length === 0 ? (
                             <div className="px-3 py-2 text-sm text-muted-foreground">
                                 No scenarios available
@@ -109,11 +109,11 @@ export const Step1BasicInfo = () => {
                                     value={String(scenario.id)}
                                     textValue={scenario.name}
                                 >
-                                    <div className="flex flex-col">
-                                        <span className="font-medium">
+                                    <div className="flex flex-col min-w-0 break-words">
+                                        <span className="font-medium break-words">
                                             {scenario.name}
                                         </span>
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="text-xs text-muted-foreground break-words">
                                             {scenario.description}
                                         </span>
                                     </div>

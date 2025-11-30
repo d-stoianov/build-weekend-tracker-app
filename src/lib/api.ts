@@ -4,7 +4,7 @@ import { supabase } from '@/providers/supabase'
 async function getAuthHeaders(): Promise<HeadersInit> {
     // Get the current session
     let { data, error } = await supabase.auth.getSession()
-    
+
     // If session is expired or missing, try to refresh it
     if (error || !data.session) {
         const refreshResult = await supabase.auth.refreshSession()
@@ -25,7 +25,7 @@ async function getAuthHeaders(): Promise<HeadersInit> {
             }
         }
     }
-    
+
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
     }

@@ -57,9 +57,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const { data: listener } = supabase.auth.onAuthStateChange(
             async (event, session) => {
-                if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+                if (
+                    event === 'SIGNED_OUT' ||
+                    event === 'TOKEN_REFRESHED' ||
+                    event === 'SIGNED_IN'
+                ) {
                     if (session?.user) {
-                        setUser({ id: session.user.id, email: session.user.email! })
+                        setUser({
+                            id: session.user.id,
+                            email: session.user.email!,
+                        })
                     } else {
                         setUser(null)
                     }
