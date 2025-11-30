@@ -12,11 +12,18 @@ export interface Parameter {
     options?: ParameterOption[]
 }
 
+export interface ScenarioOutput {
+    id: string
+    label: string
+    type: 'toggle' | 'toggel' // Support both spellings
+}
+
 export interface Scenario {
     id: string | number
     name: string
     description: string
     parameters: Parameter[]
+    outputs?: ScenarioOutput[]
 }
 
 export interface TrackerFrequency {

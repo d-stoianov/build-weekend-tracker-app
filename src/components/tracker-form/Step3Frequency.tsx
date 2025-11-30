@@ -8,9 +8,15 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useCreateTrackerContext } from '@/contexts/CreateTrackerContext'
+import { useScenarios } from '@/hooks/useScenarios'
 
 export const Step3Frequency = () => {
     const { formData, updateFormData } = useCreateTrackerContext()
+    const { data: scenarios = [] } = useScenarios()
+    
+    const selectedScenario = scenarios.find(
+        (s) => String(s.id) === String(formData.scenarioId)
+    )
 
     // Ensure frequency is always defined with defaults
     const getDefaultDateTime = () => {
@@ -147,43 +153,32 @@ export const Step3Frequency = () => {
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <Label.Root className="text-sm font-medium text-foreground">
-                        Output
-                    </Label.Root>
-                    <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="outputs-email"
-                                checked={outputs.email === 'true'}
-                                onCheckedChange={(checked) =>
-                                    handleOutputChange('email', !!checked)
-                                }
-                            />
-                            <Label.Root
-                                htmlFor="outputs-email"
-                                className="text-sm font-medium text-foreground cursor-pointer"
-                            >
-                                Email
-                            </Label.Root>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="outputs-sheet"
-                                checked={outputs.sheet === 'true'}
-                                onCheckedChange={(checked) =>
-                                    handleOutputChange('sheet', !!checked)
-                                }
-                            />
-                            <Label.Root
-                                htmlFor="outputs-sheet"
-                                className="text-sm font-medium text-foreground cursor-pointer"
-                            >
-                                Sheet
-                            </Label.Root>
+                {selectedScenario?.outputs && selectedScenario.outputs.length > 0 && (
+                    <div className="space-y-2">
+                        <Label.Root className="text-sm font-medium text-foreground">
+                            Outputs
+                        </Label.Root>
+                        <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
+                            {selectedScenario.outputs.map((output) => (
+                                <div key={output.id} className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id={`outputs-${output.id}`}
+                                        checked={outputs[output.id] === 'true'}
+                                        onCheckedChange={(checked) =>
+                                            handleOutputChange(output.id, !!checked)
+                                        }
+                                    />
+                                    <Label.Root
+                                        htmlFor={`outputs-${output.id}`}
+                                        className="text-sm font-medium text-foreground cursor-pointer"
+                                    >
+                                        {output.label}
+                                    </Label.Root>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     )

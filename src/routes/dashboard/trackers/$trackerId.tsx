@@ -267,51 +267,39 @@ const TrackerDetailsPage = () => {
                             </div>
                         )}
 
-                        <div>
-                            <Label.Root className="text-sm font-medium text-muted-foreground mb-2 block">
-                                Outputs
-                            </Label.Root>
-                            <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="outputs-email"
-                                        checked={outputs.email === 'true'}
-                                        onCheckedChange={(checked) =>
-                                            handleOutputChange(
-                                                'email',
-                                                !!checked
-                                            )
-                                        }
-                                        disabled={updateTracker.isPending}
-                                    />
-                                    <Label.Root
-                                        htmlFor="outputs-email"
-                                        className="text-sm font-medium text-foreground cursor-pointer"
-                                    >
-                                        Email
-                                    </Label.Root>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="outputs-sheet"
-                                        checked={outputs.sheet === 'true'}
-                                        onCheckedChange={(checked) =>
-                                            handleOutputChange(
-                                                'sheet',
-                                                !!checked
-                                            )
-                                        }
-                                        disabled={updateTracker.isPending}
-                                    />
-                                    <Label.Root
-                                        htmlFor="outputs-sheet"
-                                        className="text-sm font-medium text-foreground cursor-pointer"
-                                    >
-                                        Sheet
-                                    </Label.Root>
+                        {scenario?.outputs && scenario.outputs.length > 0 && (
+                            <div>
+                                <Label.Root className="text-sm font-medium text-muted-foreground mb-2 block">
+                                    Outputs
+                                </Label.Root>
+                                <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
+                                    {scenario.outputs.map((output) => (
+                                        <div
+                                            key={output.id}
+                                            className="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                id={`outputs-${output.id}`}
+                                                checked={outputs[output.id] === 'true'}
+                                                onCheckedChange={(checked) =>
+                                                    handleOutputChange(
+                                                        output.id,
+                                                        !!checked
+                                                    )
+                                                }
+                                                disabled={updateTracker.isPending}
+                                            />
+                                            <Label.Root
+                                                htmlFor={`outputs-${output.id}`}
+                                                className="text-sm font-medium text-foreground cursor-pointer"
+                                            >
+                                                {output.label}
+                                            </Label.Root>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
