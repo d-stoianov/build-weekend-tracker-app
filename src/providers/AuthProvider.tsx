@@ -20,6 +20,7 @@ interface AuthContextType {
     register: (email: string, password: string) => Promise<UserProfile | null>
     loginWithGoogle: () => Promise<void>
     logout: () => Promise<void>
+    deleteUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -178,9 +179,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null)
     }
 
+    const deleteUser = async () => {
+        const { data: session } = await supabase.auth.getSession()
+        if (session?.session) {
+            // Delete user from backend
+            try {
+                await fetch(API_URL + '/user', {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${session.session.access_token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+            } catch (err) {
+                console.error('Error deleting user from backend:', err)
+            }
+        }
+        // Sign out (Supabase will handle user deletion on backend)
+        await supabase.auth.signOut()
+        setUser(null)
+    }
+
     return (
         <AuthContext.Provider
-            value={{ user, loading, login, register, loginWithGoogle, logout }}
+            value={{
+                user,
+                loading,
+                login,
+                register,
+                loginWithGoogle,
+                logout,
+                deleteUser,
+            }}
         >
             {children}
         </AuthContext.Provider>

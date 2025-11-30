@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCallbackRouteImport } from './routes/_auth/callback'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => DashboardRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/callback': typeof AuthCallbackRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/callback': typeof AuthCallbackRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/_auth/callback': typeof AuthCallbackRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/trackers/$trackerId': typeof DashboardTrackersTrackerIdRoute
   '/dashboard/trackers/new': typeof DashboardTrackersNewRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/callback'
     | '/login'
     | '/register'
+    | '/dashboard/profile'
     | '/dashboard/'
     | '/dashboard/trackers/$trackerId'
     | '/dashboard/trackers/new'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/callback'
     | '/login'
     | '/register'
+    | '/dashboard/profile'
     | '/dashboard'
     | '/dashboard/trackers/$trackerId'
     | '/dashboard/trackers/new'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/_auth/callback'
     | '/_auth/login'
     | '/_auth/register'
+    | '/dashboard/profile'
     | '/dashboard/'
     | '/dashboard/trackers/$trackerId'
     | '/dashboard/trackers/new'
@@ -151,6 +163,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_auth/register': {
@@ -192,12 +211,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardTrackersTrackerIdRoute: typeof DashboardTrackersTrackerIdRoute
   DashboardTrackersNewRoute: typeof DashboardTrackersNewRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardTrackersTrackerIdRoute: DashboardTrackersTrackerIdRoute,
   DashboardTrackersNewRoute: DashboardTrackersNewRoute,

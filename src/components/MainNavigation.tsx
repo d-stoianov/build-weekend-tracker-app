@@ -35,8 +35,13 @@ export const MainNavigation = () => {
                                         className="min-w-[200px] bg-card rounded-lg shadow-lg p-2 z-50 border border-border"
                                         sideOffset={5}
                                     >
-                                        <DropdownMenu.Item className="px-3 py-2 rounded-md text-sm text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer outline-none">
-                                            Account Settings
+                                        <DropdownMenu.Item asChild>
+                                            <Link
+                                                to="/dashboard/profile"
+                                                className="px-3 py-2 rounded-md text-sm text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer outline-none block"
+                                            >
+                                                Account Settings
+                                            </Link>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Separator className="h-px bg-border my-1" />
                                         <DropdownMenu.Item
