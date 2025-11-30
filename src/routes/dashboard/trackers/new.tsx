@@ -29,6 +29,9 @@ const CreateTrackerForm = () => {
             if (!formData.name || !formData.scenarioId) {
                 return
             }
+
+            console.log('selectedScenario', selectedScenario)
+
             // Initialize parameter values with defaults
             if (selectedScenario) {
                 const initialParams: Record<string, string> = {}
@@ -57,15 +60,15 @@ const CreateTrackerForm = () => {
             }
             setStep(3)
         } else if (step === 3) {
-            // Final step - submit (frequency validation skipped as it's not implemented in backend)
-            // Submit the form
+            // Final step - submit
+            // Submit the form (frequency will be converted to API format in the hook)
             try {
                 await createTracker.mutateAsync({
                     name: formData.name,
                     description: formData.description || undefined,
                     scenarioId: formData.scenarioId,
                     parameters: formData.parameters,
-                    // frequency: formData.frequency, // Not yet implemented in backend
+                    frequency: formData.frequency,
                 })
                 resetForm()
                 router.navigate({ to: '/dashboard' })

@@ -20,9 +20,9 @@ export interface Scenario {
 }
 
 export interface TrackerFrequency {
-    repeatEvery: string
-    repeatUnit: 'day' | 'week' | 'month' | 'hour'
-    repeatOn: string[]
+    startDateTime: string // ISO datetime string
+    interval: number // The number (e.g., 1, 2, 5)
+    intervalUnit: 'minute' | 'hour' | 'day' | 'week' | 'month'
 }
 
 export interface Tracker {

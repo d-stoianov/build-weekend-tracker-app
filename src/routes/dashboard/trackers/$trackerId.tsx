@@ -117,34 +117,21 @@ const TrackerDetailsPage = () => {
     const formatFrequency = () => {
         if (!tracker.frequency) return 'Not configured'
 
-        const { repeatEvery, repeatUnit, repeatOn } = tracker.frequency
+        const { startDateTime, interval, intervalUnit } = tracker.frequency
+        const startDate = new Date(startDateTime)
+        const startDateFormatted = formatDateTime(startDateTime)
+
         const unitMap: Record<string, string> = {
+            minute: 'minute',
+            hour: 'hour',
             day: 'day',
             week: 'week',
             month: 'month',
-            hour: 'hour',
         }
-        const unit = unitMap[repeatUnit] || repeatUnit
-        let frequencyText = `Every ${repeatEvery} ${unit}${repeatEvery !== '1' ? 's' : ''}`
+        const unit = unitMap[intervalUnit] || intervalUnit
+        const unitText = interval === 1 ? unit : `${unit}s`
 
-        if (repeatOn && repeatOn.length > 0) {
-            const weekdays = [
-                'sunday',
-                'monday',
-                'tuesday',
-                'wednesday',
-                'thursday',
-                'friday',
-                'saturday',
-            ]
-            const dayNames = repeatOn.map((id) => {
-                const day = weekdays.findIndex((d) => d === id)
-                return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]
-            })
-            frequencyText += ` on ${dayNames.join(', ')}`
-        }
-
-        return frequencyText
+        return `Starts ${startDateFormatted}, then every ${interval} ${unitText}`
     }
 
     const isHtmlDocument = (content: string): boolean => {

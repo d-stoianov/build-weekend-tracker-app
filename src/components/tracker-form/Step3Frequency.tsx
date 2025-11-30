@@ -8,27 +8,29 @@ import {
 } from '@/components/ui/select'
 import { useCreateTrackerContext } from '@/contexts/CreateTrackerContext'
 
-const weekdays = [
-    { id: 'sunday', label: 'S', fullLabel: 'Sunday' },
-    { id: 'monday', label: 'M', fullLabel: 'Monday' },
-    { id: 'tuesday', label: 'T', fullLabel: 'Tuesday' },
-    { id: 'wednesday', label: 'W', fullLabel: 'Wednesday' },
-    { id: 'thursday', label: 'T', fullLabel: 'Thursday' },
-    { id: 'friday', label: 'F', fullLabel: 'Friday' },
-    { id: 'saturday', label: 'S', fullLabel: 'Saturday' },
-]
-
 export const Step3Frequency = () => {
     const { formData, updateFormData } = useCreateTrackerContext()
 
     // Ensure frequency is always defined with defaults
-    const frequency = formData.frequency || {
-        repeatEvery: '1',
-        repeatUnit: 'day' as const,
-        repeatOn: [],
+    const getDefaultDateTime = () => {
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const day = String(now.getDate()).padStart(2, '0')
+        const hours = String(now.getHours()).padStart(2, '0')
+        const minutes = String(now.getMinutes()).padStart(2, '0')
+        const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}`
+        // Convert to ISO string for storage
+        return new Date(localDateTime).toISOString()
     }
 
-    const handleFrequencyChange = (field: string, value: string) => {
+    const frequency = formData.frequency || {
+        startDateTime: getDefaultDateTime(),
+        interval: 1,
+        intervalUnit: 'day' as const,
+    }
+
+    const handleFrequencyChange = (field: string, value: string | number) => {
         updateFormData({
             frequency: {
                 ...frequency,
@@ -37,18 +39,24 @@ export const Step3Frequency = () => {
         })
     }
 
-    const toggleWeekday = (weekdayId: string) => {
-        const currentRepeatOn = frequency.repeatOn
-        const isSelected = currentRepeatOn.includes(weekdayId)
-        const newRepeatOn = isSelected
-            ? currentRepeatOn.filter((id) => id !== weekdayId)
-            : [...currentRepeatOn, weekdayId]
-        updateFormData({
-            frequency: {
-                ...frequency,
-                repeatOn: newRepeatOn,
-            },
-        })
+    // Convert ISO string to local datetime format for input (YYYY-MM-DDTHH:mm)
+    const getLocalDateTime = (isoString: string) => {
+        if (!isoString) {
+            return new Date().toISOString().slice(0, 16)
+        }
+        const date = new Date(isoString)
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}`
+    }
+
+    const handleDateTimeChange = (value: string) => {
+        // Convert local datetime to ISO string
+        const date = new Date(value)
+        handleFrequencyChange('startDateTime', date.toISOString())
     }
 
     return (
@@ -58,37 +66,55 @@ export const Step3Frequency = () => {
                     Configure Frequency
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                    Set how often this tracker should run
+                    Set when to start tracking and how often to repeat
                 </p>
             </div>
             <div className="space-y-6">
                 <div className="space-y-2">
                     <Label.Root
-                        htmlFor="repeatEvery"
+                        htmlFor="startDateTime"
+                        className="text-sm font-medium text-foreground"
+                    >
+                        Start Date & Time{' '}
+                        <span className="text-destructive">*</span>
+                    </Label.Root>
+                    <input
+                        id="startDateTime"
+                        type="datetime-local"
+                        required
+                        value={getLocalDateTime(frequency.startDateTime)}
+                        onChange={(e) => handleDateTimeChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label.Root
+                        htmlFor="interval"
                         className="text-sm font-medium text-foreground"
                     >
                         Repeat Every <span className="text-destructive">*</span>
                     </Label.Root>
                     <div className="flex items-center gap-3">
                         <input
-                            id="repeatEvery"
+                            id="interval"
                             type="number"
                             min="1"
                             placeholder="1"
                             required
-                            value={frequency.repeatEvery}
+                            value={frequency.interval}
                             onChange={(e) =>
                                 handleFrequencyChange(
-                                    'repeatEvery',
-                                    e.target.value
+                                    'interval',
+                                    parseInt(e.target.value) || 1
                                 )
                             }
                             className="w-24 px-4 py-3 rounded-lg border border-input bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                         />
                         <Select
-                            value={frequency.repeatUnit}
+                            value={frequency.intervalUnit}
                             onValueChange={(value) =>
-                                handleFrequencyChange('repeatUnit', value)
+                                handleFrequencyChange('intervalUnit', value)
                             }
                             required
                         >
@@ -96,57 +122,16 @@ export const Step3Frequency = () => {
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="minute">
+                                    Minute(s)
+                                </SelectItem>
+                                <SelectItem value="hour">Hour(s)</SelectItem>
                                 <SelectItem value="day">Day(s)</SelectItem>
                                 <SelectItem value="week">Week(s)</SelectItem>
                                 <SelectItem value="month">Month(s)</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
-                </div>
-
-                <div className="space-y-2">
-                    <Label.Root className="text-sm font-medium text-foreground">
-                        Repeat On{' '}
-                        <span className="text-muted-foreground text-xs">
-                            (optional)
-                        </span>
-                    </Label.Root>
-                    <div className="flex items-center gap-2 flex-wrap">
-                        {weekdays.map((day) => {
-                            const isSelected =
-                                frequency.repeatOn.includes(day.id)
-                            return (
-                                <button
-                                    key={day.id}
-                                    type="button"
-                                    onClick={() => toggleWeekday(day.id)}
-                                    className={`
-                                        w-12 h-12 rounded-lg border-2 font-semibold text-sm transition-all
-                                        ${
-                                            isSelected
-                                                ? 'bg-primary text-primary-foreground border-primary'
-                                                : 'bg-background/50 text-foreground border-input hover:border-primary/50 hover:bg-accent'
-                                        }
-                                    `}
-                                    title={day.fullLabel}
-                                >
-                                    {day.label}
-                                </button>
-                            )
-                        })}
-                    </div>
-                    {frequency.repeatOn.length > 0 && (
-                        <p className="text-xs text-muted-foreground">
-                            Selected:{' '}
-                            {frequency.repeatOn
-                                .map(
-                                    (id) =>
-                                        weekdays.find((d) => d.id === id)
-                                            ?.fullLabel
-                                )
-                                .join(', ')}
-                        </p>
-                    )}
                 </div>
             </div>
         </>

@@ -25,9 +25,9 @@ const initialFormData: CreateTrackerRequest = {
     scenarioId: '',
     parameters: {},
     frequency: {
-        repeatEvery: '1',
-        repeatUnit: 'day',
-        repeatOn: [],
+        startDateTime: new Date().toISOString(),
+        interval: 1,
+        intervalUnit: 'day',
     },
 }
 
