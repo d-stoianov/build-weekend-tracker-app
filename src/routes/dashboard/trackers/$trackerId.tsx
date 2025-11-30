@@ -280,14 +280,19 @@ const TrackerDetailsPage = () => {
                                         >
                                             <Checkbox
                                                 id={`outputs-${output.id}`}
-                                                checked={outputs[output.id] === 'true'}
+                                                checked={
+                                                    outputs[output.id] ===
+                                                    'true'
+                                                }
                                                 onCheckedChange={(checked) =>
                                                     handleOutputChange(
                                                         output.id,
                                                         !!checked
                                                     )
                                                 }
-                                                disabled={updateTracker.isPending}
+                                                disabled={
+                                                    updateTracker.isPending
+                                                }
                                             />
                                             <Label.Root
                                                 htmlFor={`outputs-${output.id}`}

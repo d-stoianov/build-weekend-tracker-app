@@ -13,7 +13,7 @@ import { useScenarios } from '@/hooks/useScenarios'
 export const Step3Frequency = () => {
     const { formData, updateFormData } = useCreateTrackerContext()
     const { data: scenarios = [] } = useScenarios()
-    
+
     const selectedScenario = scenarios.find(
         (s) => String(s.id) === String(formData.scenarioId)
     )
@@ -153,32 +153,41 @@ export const Step3Frequency = () => {
                     </div>
                 </div>
 
-                {selectedScenario?.outputs && selectedScenario.outputs.length > 0 && (
-                    <div className="space-y-2">
-                        <Label.Root className="text-sm font-medium text-foreground">
-                            Outputs
-                        </Label.Root>
-                        <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
-                            {selectedScenario.outputs.map((output) => (
-                                <div key={output.id} className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id={`outputs-${output.id}`}
-                                        checked={outputs[output.id] === 'true'}
-                                        onCheckedChange={(checked) =>
-                                            handleOutputChange(output.id, !!checked)
-                                        }
-                                    />
-                                    <Label.Root
-                                        htmlFor={`outputs-${output.id}`}
-                                        className="text-sm font-medium text-foreground cursor-pointer"
+                {selectedScenario?.outputs &&
+                    selectedScenario.outputs.length > 0 && (
+                        <div className="space-y-2">
+                            <Label.Root className="text-sm font-medium text-foreground">
+                                Outputs
+                            </Label.Root>
+                            <div className="space-y-3 p-4 border border-border rounded-lg bg-background/50">
+                                {selectedScenario.outputs.map((output) => (
+                                    <div
+                                        key={output.id}
+                                        className="flex items-center space-x-2"
                                     >
-                                        {output.label}
-                                    </Label.Root>
-                                </div>
-                            ))}
+                                        <Checkbox
+                                            id={`outputs-${output.id}`}
+                                            checked={
+                                                outputs[output.id] === 'true'
+                                            }
+                                            onCheckedChange={(checked) =>
+                                                handleOutputChange(
+                                                    output.id,
+                                                    !!checked
+                                                )
+                                            }
+                                        />
+                                        <Label.Root
+                                            htmlFor={`outputs-${output.id}`}
+                                            className="text-sm font-medium text-foreground cursor-pointer"
+                                        >
+                                            {output.label}
+                                        </Label.Root>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
             </div>
         </>
     )
